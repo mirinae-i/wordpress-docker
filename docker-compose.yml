@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+
+  app:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - '9080:80'
+    environment:
+      - WORDPRESS_DB_HOST=database
+      - WORDPRESS_DB_USER=mirinae
+      - WORDPRESS_DB_PASSWORD='!secret'
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - type: bind
+        source: ./app
+        target: /var/www/html
+
+  database:
+    image: mariadb:lts
+    restart: always
+    environment:
+      - MARIADB_DATABASE=wordpress
+      - MARIADB_USER=mirinae
+      - MARIADB_PASSWORD='!secret'
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+    volumes:
+      - type: bind
+        source: ./database/data
+        target: /var/lib/mysql
+      - type: bind
+        source: ./database/config
+        target: /etc/mysql/conf.d
